@@ -98,20 +98,19 @@ class _cilindro: public _rotacion
 {
 public:
 
-	_cilindro(int num, float ancho, float altura);
+	_cilindro(int num=8, float ancho=0.5, float altura=1);
 };
 
 class _cono: public _rotacion
 {
 public:
 
-	_cono(int num, float ancho, float altura);
+	_cono(int num=8, float ancho=0.5, float altura=1);
 };
 
 class _esfera: public _rotacion
 {
 public:
 
-	_esfera(float radio, int n, int m);
-	//void  parametros(vector<_vertex3f> perfil, int num, int radio);
+	_esfera(float radio=1.0, int n=16, int m=16);
 };

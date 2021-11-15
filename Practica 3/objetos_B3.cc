@@ -535,24 +535,20 @@ _esfera::_esfera(float radio, int n, int m){
 // objeto articulado: tanque
 //************************************************************************
 
-_cabina::_cabina(){
+_carroceria::_carroceria(){
   
   vector<_vertex3f> perfil;
   ruedas.parametros(perfil, 16, 0.2, 1.0, 0, 1);
 
+  altura = 0.25;
+
 };
 
-void _cabina::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+void _carroceria::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
   
   glPushMatrix();
   glScalef(1.0,0.25,1.0);
   carroceria.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-  glPopMatrix();
-
-  glPushMatrix();
-  glScalef(0.4,0.25,0.5);
-  glTranslatef(0.75,1.0,0.5);
-  cabina.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
   
   glPushMatrix();
@@ -569,189 +565,109 @@ void _cabina::draw(_modo modo, float r1, float g1, float b1, float r2, float g2,
 
 }
 
-_gancho_base::_gancho_base(){
-  vector<_vertex3f> perfil;
-  palo_base.parametros(perfil, 16, 0.05, 0.45, 0, 1);
-};
+_cabina::_cabina(){
+  altura = 0.75;
+  anchura = 0.7;
+}
 
-void _gancho_base::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+void _cabina::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
   
   glPushMatrix();
-  glScalef(0.25,0.40,0.25);
-  glTranslatef(1.5,0.63,-0.85);
-  plataforma_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-  glPopMatrix();
-
-  glPushMatrix();
-  glRotatef(90.0,0.0,0.0,-1.0);
-  glTranslatef(-0.5,0.70,-0.20);
-  palo_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glScalef(0.7,0.75,0.7);
+  cabina.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 }
 
+_brazo_base::_brazo_base(){
+  altura = 0.75;
+  anchura = 0.15;
+};
+
+void _brazo_base::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+  
+  glPushMatrix();
+  glScalef(-0.75,0.15,0.15);
+  glRotatef(90.0,0.0,0.0,1.0);
+  glTranslatef(0.0,-0.15,0.0);
+  brazo_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
+
+}
+
+_brazo_final::_brazo_final(){
+  altura = 0.75;
+  anchura = 0.15;
+};
+
+void _brazo_final::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+  
+  glPushMatrix();
+  glScalef(-0.75,0.15,0.15);
+  glRotatef(90.0,0.0,0.0,1.0);
+  glTranslatef(0.0,-0.05,0.0);
+  //glTranslatef(-1.7,0.75,0.0);
+  brazo_final.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
+
+}
+
 _gancho_mano::_gancho_mano(){
-  vector<_vertex3f> perfil;
-  palo_final.parametros(perfil, 16, 0.05, 0.45, 0, 1);
+  
 };
 
 void _gancho_mano::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
-  
-  /*glPushMatrix();
-  glScalef(0.25,0.40,0.25);
-  glTranslatef(1.5,0.63,-0.85);
-  plataforma_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-  glPopMatrix();*/
 
   glPushMatrix();
-  glRotatef(90.0,0.0,0.0,-1.0);
-  glTranslatef(-0.5,1.70,-0.20);
-  palo_final.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glScalef(0.4,0.4,0.4);
+  glTranslatef(0.5,0.0,0.0);
+  mano.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 }
 
 _excavadora::_excavadora(){
+  giro_cabina = 0.0;
+  giro_brazo_base = 0.0;
+  giro_brazo_final = 0.0;
+  giro_mano = 0.0;
 
+  giro_brazo_base_min = 0;
+  giro_brazo_base_max = 20;
+  giro_brazo_final_min = -45;
+  giro_brazo_final_max = 0;
+  giro_mano_min = -80;
+  giro_mano_max = 0;
 };
 
 void _excavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
+  
   glPushMatrix();
+  carroceria.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
+
+  glRotatef(giro_cabina,0,1,0);
+  glPushMatrix();
+  glTranslatef(0.0,(carroceria.altura+cabina.altura)/4.0,0.0);
   cabina.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
+  glRotatef(giro_brazo_base,0,0,1);
   glPushMatrix();
-  gancho_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glTranslatef(cabina.anchura/2.0,(carroceria.altura+cabina.altura)/2.0,0.0);
+  brazo_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
+
+  glTranslatef((cabina.anchura+brazo_base.altura)/1.5,(carroceria.altura+cabina.altura)/2.0,0.0);
+  glRotatef(giro_brazo_final,0,0,1);
+  glPushMatrix();
+  brazo_final.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
+  glPopMatrix();
   glPopMatrix();
 
   glPushMatrix();
+  glTranslatef((cabina.anchura+brazo_base.altura+brazo_final.altura)/3.2,(carroceria.altura+cabina.altura)/200.0,0.0);
+  glRotatef(giro_mano,0,0,1);
   gancho_mano.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
+  glPopMatrix();
+
 }
-
-_chasis::_chasis()
-{
-// perfil para un cilindro
-vector<_vertex3f> perfil;
-/*_vertex3f aux;
-aux.x=0.107;aux.y=-0.5;aux.z=0.0;
-perfil.push_back(aux);
-aux.x=0.107;aux.y=0.5;aux.z=0.0;
-perfil.push_back(aux);*/
-rodamiento.parametros(perfil,12,0.2,0.5,0,1);
-altura=0.22;
-};
-
-void _chasis::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{
-glPushMatrix();
-glScalef(1.0,0.22,0.95);
-base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glRotatef(90.0,1,0,0);
-rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-0.25,0.0,0.0);
-glRotatef(90.0,1,0,0);
-rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-0.5,0.0,0.0);
-glRotatef(90.0,1,0,0);
-rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(0.25,0.0,0.0);
-glRotatef(90.0,1,0,0);
-rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(0.5,0.0,0.0);
-glRotatef(90.0,1,0,0);
-rodamiento.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-}
-
-//************************************************************************
-
-_torreta::_torreta()
-{
-altura=0.38;
-anchura=0.65;
-};
-
-void _torreta::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{
-glPushMatrix();
-glScalef(0.65,0.18,0.6);
-base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(-0.325,0,0);
-glRotatef(90.0,0,0,1);
-glScalef(0.18,0.16,0.6);
-parte_trasera.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-}
-
-//************************************************************************
-
-_tubo::_tubo()
-{
-// perfil para un cilindro
-vector<_vertex3f> perfil;
-_vertex3f aux;
-aux.x=0.04;aux.y=-0.4;aux.z=0.0;
-perfil.push_back(aux);
-aux.x=0.04;aux.y=0.4;aux.z=0.0;
-perfil.push_back(aux);
-tubo_abierto.parametros(perfil,12,0,0,0,0);
-};
-
-void _tubo::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{
-
-glPushMatrix();
-glTranslatef(0.4,0,0);
-glRotatef(90.0,0,0,1);
-tubo_abierto.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-}
-
-
-//************************************************************************
-
-_tanque::_tanque()
-{
-giro_tubo=2.0;
-giro_torreta=0.0;
-giro_tubo_min=-9;
-giro_tubo_max=20;
-};
-
-void _tanque::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor)
-{
-glPushMatrix();
-chasis.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-
-glRotatef(giro_torreta,0,1,0);
-glPushMatrix();
-glTranslatef(0.0,(chasis.altura+torreta.altura)/2.0,0.0);
-torreta.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-
-glPushMatrix();
-glTranslatef(torreta.anchura/2.0,(chasis.altura+torreta.altura)/2.0,0.0);
-glRotatef(giro_tubo,0,0,1);
-tubo.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
-glPopMatrix();
-glPopMatrix();
-
-};
-

@@ -39,6 +39,11 @@ _esfera esfera(1, 16, 16);
 
 _excavadora articulado;
 
+float velocidad_cabina = 2.0;
+float velodidad_brazo_base = 1.0;
+float velocidad_brazo_final = 1.0;
+float velocidad_mano = 1.0;
+
 // _objeto_ply *ply1;
 
 
@@ -191,6 +196,14 @@ switch (toupper(Tecla1)){
 		case '6':t_objeto=CILINDRO;break;
 		case '7':t_objeto=ESFERA;break;
 		case '8':t_objeto=ARTICULADO;break;
+	case 'A':velocidad_cabina+=2;break;
+	case 'Z':velocidad_cabina-=2;break;
+	case 'S':velodidad_brazo_base+=1;break;
+	case 'X':velodidad_brazo_base-=1;break;
+	case 'D':velocidad_brazo_final+=1;break;
+	case 'C':velocidad_brazo_final-=1;break;
+	case 'F':velocidad_mano+=1;break;
+	case 'V':velocidad_mano-=1;break;
 	}
 glutPostRedisplay();
 }
@@ -215,18 +228,28 @@ switch (Tecla1){
 	case GLUT_KEY_DOWN:Observer_angle_x+=3;break;
 	case GLUT_KEY_PAGE_UP:Observer_distance*=1.2;break;
 	case GLUT_KEY_PAGE_DOWN:Observer_distance/=1.2;break;
-	/*case GLUT_KEY_F5:articulado.giro_cilindro+=2;break;
-	case GLUT_KEY_F6:articulado.giro_cilindro-=2;break;*/
-	/*case GLUT_KEY_F1:articulado.giro_tubo+=1;
-                         if (articulado.giro_tubo>articulado.giro_tubo_max) articulado.giro_tubo=articulado.giro_tubo_max;
-                         break;
-        case GLUT_KEY_F2:articulado.giro_tubo-=1;
-                         if (articulado.giro_tubo<articulado.giro_tubo_min) articulado.giro_tubo=articulado.giro_tubo_min;
-                         break;break;
-        case GLUT_KEY_F3:articulado.giro_torreta+=5;break;
-        case GLUT_KEY_F4:articulado.giro_torreta-=5;break;*/
+	case GLUT_KEY_F1:articulado.giro_cabina+=velocidad_cabina;break;
+	case GLUT_KEY_F2:articulado.giro_cabina-=velocidad_cabina;break;
+	case GLUT_KEY_F3:articulado.giro_brazo_base+=1;
+        if (articulado.giro_brazo_base>articulado.giro_brazo_base_max) articulado.giro_brazo_base=articulado.giro_brazo_base_max;
+            break;
+    case GLUT_KEY_F4:articulado.giro_brazo_base-=1;
+        if (articulado.giro_brazo_base<articulado.giro_brazo_base_min) articulado.giro_brazo_base=articulado.giro_brazo_base_min;
+            break;break;
+	case GLUT_KEY_F5:articulado.giro_brazo_final+=velocidad_brazo_final;
+        if (articulado.giro_brazo_final>articulado.giro_brazo_final_max) articulado.giro_brazo_final=articulado.giro_brazo_final_max;
+            break;
+    case GLUT_KEY_F6:articulado.giro_brazo_final-=velocidad_brazo_final;
+        if (articulado.giro_brazo_final<articulado.giro_brazo_final_min) articulado.giro_brazo_final=articulado.giro_brazo_final_min;
+            break;break;
+	case GLUT_KEY_F7:articulado.giro_mano+=1;
+        if (articulado.giro_mano>articulado.giro_mano_max) articulado.giro_mano=articulado.giro_mano_max;
+            break;
+	case GLUT_KEY_F8:articulado.giro_mano-=1;
+        if (articulado.giro_mano<articulado.giro_mano_min) articulado.giro_mano=articulado.giro_mano_min;
+            break;break;		
 
-	} //faltan teclas para mover la grua
+	}
 glutPostRedisplay();
 }
 

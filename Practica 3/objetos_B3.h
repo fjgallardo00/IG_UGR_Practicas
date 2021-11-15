@@ -118,31 +118,60 @@ public:
 
 /*******************************************************************************************/
 
-class _cabina: public _triangulos3D{
+class _carroceria: public _triangulos3D{
 	
+	public:
+		
+		_carroceria();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+		float altura;
+
+	protected:
+		_cilindro ruedas;
+		_cubo carroceria;
+		
+};
+
+class _cabina: public _triangulos3D{
 	public:
 		
 		_cabina();
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
+		float altura;
+		float anchura;
+
 	protected:
-		_cilindro ruedas;
-		_cubo carroceria;
 		_cubo cabina;
 };
 
-class _gancho_base: public _triangulos3D{
+class _brazo_base: public _triangulos3D{
 		
 	public:
-		_gancho_base();
+		_brazo_base();
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
+		float altura;
+		float anchura;
+
 	protected:
-		_cilindro palo_base;
-		_cubo plataforma_base;
-		//_esfera articulacion;
-		/*_cubo carroceria;
-		_cubo cabina;*/
+		_cubo brazo_base;
+
+};
+
+class _brazo_final: public _triangulos3D{
+		
+	public:
+		_brazo_final();
+		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
+
+		float altura;
+		float anchura;
+
+	protected:
+		
+		_cubo brazo_final;
 
 };
 
@@ -153,8 +182,8 @@ class _gancho_mano: public _triangulos3D{
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 	protected:
-		_cilindro palo_final;
-		//_esfera articulacion;
+		
+		_piramide mano;
 
 };
 
@@ -164,74 +193,24 @@ class _excavadora: public _triangulos3D{
 		_excavadora();
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
+		float giro_cabina;
+		float giro_brazo_base;
+		float giro_brazo_final;
+		float giro_mano;
+
+		float giro_brazo_base_min;
+		float giro_brazo_base_max;
+		float giro_brazo_final_min;
+		float giro_brazo_final_max;
+		float giro_mano_min;
+		float giro_mano_max;
+		
+
 	protected:
+		_carroceria carroceria;
 		_cabina cabina;
-		_gancho_base gancho_base;
+		_brazo_base brazo_base;
+		_brazo_final brazo_final;
 		_gancho_mano gancho_mano;
 
 };
-//************************************************************************
-// objeto articulado: tanque
-//************************************************************************
-
-class _chasis: public _triangulos3D
-{
-public:
-       _chasis();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float altura;
-
-protected:
-_rotacion  rodamiento;
-_cubo  base;
-};
-
-//************************************************************************
-
-class _torreta: public _triangulos3D
-{
-public:
-       _torreta();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float altura;
-float anchura;
-
-protected:
-_cubo  base;
-_piramide parte_trasera;
-};
-
-//************************************************************************
-
-class _tubo: public _triangulos3D
-{
-public:
-       _tubo();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-protected:
-_rotacion tubo_abierto; // caña del cañón
-};
-
-//************************************************************************
-
-class _tanque: public _triangulos3D
-{
-public:
-       _tanque();
-void 	draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
-
-float giro_tubo;
-float giro_torreta;
-
-float giro_tubo_min;
-float giro_tubo_max;
-
-protected:
-_chasis chasis;
-_torreta torreta;
-_tubo tubo;
-};
-

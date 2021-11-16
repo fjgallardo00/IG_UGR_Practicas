@@ -604,8 +604,7 @@ void _brazo_final::draw(_modo modo, float r1, float g1, float b1, float r2, floa
   glPushMatrix();
   glScalef(-0.75,0.15,0.15);
   glRotatef(90.0,0.0,0.0,1.0);
-  glTranslatef(0.0,-0.05,0.0);
-  //glTranslatef(-1.7,0.75,0.0);
+  glTranslatef(0.0,-0.15,-0.1);
   brazo_final.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
@@ -631,7 +630,7 @@ _excavadora::_excavadora(){
   giro_mano = 0.0;
 
   giro_brazo_base_min = 0;
-  giro_brazo_base_max = 20;
+  giro_brazo_base_max = 30;
   giro_brazo_final_min = -45;
   giro_brazo_final_max = 0;
   giro_mano_min = -80;
@@ -650,13 +649,13 @@ void _excavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
   cabina.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
+  glTranslatef(cabina.anchura/2.0,(carroceria.altura+cabina.altura)/2.0,0.0);
   glRotatef(giro_brazo_base,0,0,1);
   glPushMatrix();
-  glTranslatef(cabina.anchura/2.0,(carroceria.altura+cabina.altura)/2.0,0.0);
   brazo_base.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();
 
-  glTranslatef((cabina.anchura+brazo_base.altura)/1.5,(carroceria.altura+cabina.altura)/2.0,0.0);
+  glTranslatef((cabina.anchura+brazo_base.altura)/2.5,(carroceria.altura+cabina.altura)/400.0,0.0);
   glRotatef(giro_brazo_final,0,0,1);
   glPushMatrix();
   brazo_final.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
@@ -664,7 +663,7 @@ void _excavadora::draw(_modo modo, float r1, float g1, float b1, float r2, float
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef((cabina.anchura+brazo_base.altura+brazo_final.altura)/3.2,(carroceria.altura+cabina.altura)/200.0,0.0);
+  glTranslatef((cabina.anchura+brazo_base.altura+brazo_final.altura)/3.5,(carroceria.altura+cabina.altura)/200.0,0.0);
   glRotatef(giro_mano,0,0,1);
   gancho_mano.draw(modo, r1, g1, b1, r2, g2, b2, grosor);
   glPopMatrix();

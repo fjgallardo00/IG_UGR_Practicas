@@ -44,6 +44,11 @@ float velodidad_brazo_base = 1.0;
 float velocidad_brazo_final = 1.0;
 float velocidad_mano = 1.0;
 
+bool activar_idle_horario = false;
+
+int flag=0, flag2=0, flag3=0;
+int mov=7, mov2=2, mov3=1;
+
 // _objeto_ply *ply1;
 
 
@@ -204,6 +209,11 @@ switch (toupper(Tecla1)){
 	case 'C':velocidad_brazo_final-=1;break;
 	case 'F':velocidad_mano+=1;break;
 	case 'V':velocidad_mano-=1;break;
+	case 'I':activar_idle_horario=true; break;
+	case 'O':activar_idle_horario=false; break;
+	case 'K':mov++;mov2++;mov3++; break;
+	case 'L':mov--;mov2--;mov3--; break;
+	
 	}
 glutPostRedisplay();
 }
@@ -235,19 +245,22 @@ switch (Tecla1){
             break;
     case GLUT_KEY_F4:articulado.giro_brazo_base-=1;
         if (articulado.giro_brazo_base<articulado.giro_brazo_base_min) articulado.giro_brazo_base=articulado.giro_brazo_base_min;
-            break;break;
+            break;
 	case GLUT_KEY_F5:articulado.giro_brazo_final+=velocidad_brazo_final;
         if (articulado.giro_brazo_final>articulado.giro_brazo_final_max) articulado.giro_brazo_final=articulado.giro_brazo_final_max;
             break;
     case GLUT_KEY_F6:articulado.giro_brazo_final-=velocidad_brazo_final;
         if (articulado.giro_brazo_final<articulado.giro_brazo_final_min) articulado.giro_brazo_final=articulado.giro_brazo_final_min;
-            break;break;
+            break;
 	case GLUT_KEY_F7:articulado.giro_mano+=1;
         if (articulado.giro_mano>articulado.giro_mano_max) articulado.giro_mano=articulado.giro_mano_max;
             break;
 	case GLUT_KEY_F8:articulado.giro_mano-=1;
         if (articulado.giro_mano<articulado.giro_mano_min) articulado.giro_mano=articulado.giro_mano_min;
-            break;break;		
+            break;	
+
+	/*case GLUT_KEY_F9: FuncionIdleEmpezar;break;
+	case GLUT_KEY_F10: FuncionIdleTerminar;break;*/
 
 	}
 glutPostRedisplay();
@@ -361,6 +374,57 @@ vector<_vertex3f> ModeloReinaAjedrez(){
 	return perfil2;
 }
 
+void funcion_idle(){
+
+	if(activar_idle_horario){
+		
+		//cabina
+		articulado.giro_cabina+=mov;
+
+		//brazo_base
+		if (flag==0) articulado.giro_brazo_base+=mov2;
+		else articulado.giro_brazo_base-=mov2;
+
+		if (articulado.giro_brazo_base>articulado.giro_brazo_base_max){
+			articulado.giro_brazo_base=articulado.giro_brazo_base_max;
+			flag=1;
+		}
+		if (articulado.giro_brazo_base<articulado.giro_brazo_base_min){
+			articulado.giro_brazo_base=articulado.giro_brazo_base_min;
+			flag=0;
+		}
+
+		//brazo_final
+		if (flag2==0) articulado.giro_brazo_final+=mov3;
+		else articulado.giro_brazo_final-=mov3;
+
+		if (articulado.giro_brazo_final>articulado.giro_brazo_final_max){
+			articulado.giro_brazo_final=articulado.giro_brazo_final_max;
+			flag2=1;
+		}
+		if (articulado.giro_brazo_final<articulado.giro_brazo_final_min){
+			articulado.giro_brazo_final=articulado.giro_brazo_final_min;
+			flag2=0;
+		}
+        
+		//mano excavadora
+		if (flag3==0) articulado.giro_mano+=mov3;
+		else articulado.giro_mano-=mov3;
+
+		if (articulado.giro_mano>articulado.giro_mano_max){
+			articulado.giro_mano=articulado.giro_mano_max;
+			flag3=1;
+		}
+		if (articulado.giro_mano<articulado.giro_mano_min){
+			articulado.giro_mano=articulado.giro_mano_min;
+			flag3=0;
+		}
+
+	}
+
+	glutPostRedisplay();
+}
+
 
 //***************************************************************************
 // Programa principal
@@ -424,6 +488,8 @@ glutReshapeFunc(change_window_size);
 glutKeyboardFunc(normal_key);
 // asignación de la funcion llamada "tecla_Especial" al evento correspondiente
 glutSpecialFunc(special_key);
+
+glutIdleFunc(funcion_idle);
 
 // funcion de inicialización
 initialize();

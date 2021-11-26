@@ -170,7 +170,6 @@ class _brazo_final: public _triangulos3D{
 		float anchura;
 
 	protected:
-		
 		_cubo brazo_final;
 
 };
@@ -182,7 +181,6 @@ class _gancho_mano: public _triangulos3D{
 		void draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor);
 
 	protected:
-		
 		_piramide mano;
 
 };

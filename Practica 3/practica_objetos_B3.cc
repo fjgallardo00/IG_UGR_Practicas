@@ -154,8 +154,6 @@ draw_objects();
 glutSwapBuffers();
 }
 
-
-
 //***************************************************************************
 // Funcion llamada cuando se produce un cambio en el tamaño de la ventana
 //
@@ -258,10 +256,6 @@ switch (Tecla1){
 	case GLUT_KEY_F8:articulado.giro_mano-=1;
         if (articulado.giro_mano<articulado.giro_mano_min) articulado.giro_mano=articulado.giro_mano_min;
             break;	
-
-	/*case GLUT_KEY_F9: FuncionIdleEmpezar;break;
-	case GLUT_KEY_F10: FuncionIdleTerminar;break;*/
-
 	}
 glutPostRedisplay();
 }
@@ -294,8 +288,6 @@ glClearColor(1,1,1,1);
 glEnable(GL_DEPTH_TEST);
 change_projection();
 glViewport(0,0,Window_width,Window_high);
-
-
 
 }
 

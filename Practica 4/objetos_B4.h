@@ -16,15 +16,11 @@ typedef enum{POINTS,EDGES,SOLID_CHESS,SOLID,SOLID_ILLUMINATED_FLAT,
 // clase punto
 //*************************************************************************
 
-class _puntos3D
-{
-public:
-
-  
-	_puntos3D();
-void 	draw_puntos(float r, float g, float b, int grosor);
-
-vector<_vertex3f> vertices;
+class _puntos3D{
+	public:
+		_puntos3D();
+		void draw_puntos(float r, float g, float b, int grosor);
+		vector<_vertex3f> vertices;
 };
 
 //*************************************************************************

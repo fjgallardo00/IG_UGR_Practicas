@@ -49,6 +49,8 @@ bool activar_idle_horario = false;
 int flag=0, flag2=0, flag3=0;
 int mov=7, mov2=2, mov3=1;
 
+int alfa = 0, beta = 0;
+
 // _objeto_ply *ply1;
 
 
@@ -144,15 +146,29 @@ switch (t_objeto){
 //
 //***************************************************************************
 
-void luces ()
+void luces (int alfa, int beta)
 {
 float   luz_ambiente[]={0.2, 0.2, 0.2, 1.0},
         luz1[]={1.0, 1.0, 1.0, 1.0},
-        pos1[]= {0, 20.0, 40.0, 1.0};
+        pos1[]= {0, 20.0, 40.0, 1.0},
+		luz2[]={0.2, 1.0, 0.0, 1.0},
+		pos2[]={-20., 20.0, 00.0, 1.0};
      
+
+
 glLightfv (GL_LIGHT0, GL_AMBIENT, luz_ambiente);
 glLightfv (GL_LIGHT1, GL_DIFFUSE, luz1);
 glLightfv (GL_LIGHT1, GL_SPECULAR, luz1);
+//glLightfv(GL_LIGHT1, GL_POSITION, pos1);
+glLightfv (GL_LIGHT2, GL_DIFFUSE, luz2);
+glLightfv (GL_LIGHT2, GL_SPECULAR, luz2);
+glLightfv(GL_LIGHT2, GL_POSITION, pos2);
+
+glPushMatrix();
+glRotatef(alfa,0,1,0);
+glTranslatef(0,beta,0);
+glLightfv(GL_LIGHT1, GL_POSITION, pos1);
+glPopMatrix();
 
 glDisable (GL_LIGHT0);
 glEnable (GL_LIGHT1);
@@ -163,7 +179,7 @@ void draw(void)
 
 clean_window();
 change_observer();
-luces(/*alfa,beta*/); //pintar las luces
+luces(alfa,beta);
 draw_axis();
 draw_objects();
 glutSwapBuffers();
@@ -230,6 +246,10 @@ switch (toupper(Tecla1)){
 	case 'O':activar_idle_horario=false; break;
 	case 'K':mov++;mov2++;mov3++; break;
 	case 'L':mov--;mov2--;mov3--; break;
+	case 'H':alfa+=5; break;
+	case 'J':alfa-=5; break;
+	case 'N':beta+=5; break;
+	case 'M':beta-=5; break;
 	
 	}
 glutPostRedisplay();
@@ -274,11 +294,7 @@ switch (Tecla1){
             break;
 	case GLUT_KEY_F8:articulado.giro_mano-=1;
         if (articulado.giro_mano<articulado.giro_mano_min) articulado.giro_mano=articulado.giro_mano_min;
-            break;	
-
-	/*case GLUT_KEY_F9: FuncionIdleEmpezar;break;
-	case GLUT_KEY_F10: FuncionIdleTerminar;break;*/
-
+            break;
 	}
 glutPostRedisplay();
 }
@@ -495,7 +511,7 @@ glutInitWindowSize(Window_width,Window_high);
 
 // llamada para crear la ventana, indicando el titulo (no se visualiza hasta que se llama
 // al bucle de eventos)
-glutCreateWindow("PRACTICA - 3");
+glutCreateWindow("PRACTICA - 4");
 
 // asignación de la funcion llamada "dibujar" al evento de dibujo
 glutDisplayFunc(draw);
@@ -525,12 +541,6 @@ return 0;
 
 /*
 
-//glLightfv (GL_LIGHT2, GL_DIFFUSE, luz2);
-//glLightfv (GL_LIGHT2, GL_SPECULAR, luz2);
 
-//glPushMatrix();
-//glRotatef(alfa,0,1,0);
-//glLightfv(GL_LIGHT1, GL_POSITION, pos1);
-//glPopMatrix();
 
 */

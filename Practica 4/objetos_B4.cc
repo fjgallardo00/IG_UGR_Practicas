@@ -42,7 +42,7 @@ b_normales_vertices=false;
 
 ambiente_difusa=_vertex4f(0.2,0.4,0.9,1.0);  //coeficientes ambiente y difuso
 especular=_vertex4f(0.5,0.5,0.5,1.0);        //coeficiente especular
-brillo=120;                                   //exponente del brillo 
+brillo=100;                                   //exponente del brillo 
 
 }
 
@@ -140,27 +140,81 @@ void _triangulos3D::draw_iluminacion_plana( ){
 }
 
 //*************************************************************************
+// dibujar en modo iluminación plano
+//*************************************************************************
+
+void _triangulos3D::draw_iluminacion_suave( ){
+  int i;
+  if (b_normales_caras==false) calcular_normales_caras();
+  if (b_normales_vertices==false) calcular_normales_vertices();
+
+  glEnable (GL_LIGHTING);
+  glShadeModel(GL_SMOOTH);  //GL_SMOOTH
+  glEnable(GL_NORMALIZE);
+
+  glMaterialfv(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE,(GLfloat *) &ambiente_difusa);
+  glMaterialfv(GL_FRONT_AND_BACK,GL_SPECULAR,(GLfloat *) &especular);
+  glMaterialf(GL_FRONT_AND_BACK,GL_SHININESS,brillo);
+
+  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+  glBegin(GL_TRIANGLES);
+  for (i=0;i<caras.size();i++){
+
+    glNormal3fv((GLfloat *) &normales_vertices[caras[i]._0]);
+    glVertex3fv((GLfloat *) &vertices[caras[i]._0]);     
+    
+    glNormal3fv((GLfloat *) &normales_vertices[caras[i]._1]);
+    glVertex3fv((GLfloat *) &vertices[caras[i]._1]);
+    
+    glNormal3fv((GLfloat *) &normales_vertices[caras[i]._2]);
+    glVertex3fv((GLfloat *) &vertices[caras[i]._2]);
+    
+  }
+  glEnd();
+
+  glDisable(GL_LIGHTING);
+}
+
+//*************************************************************************
 // calcular normales a caras
 //*************************************************************************
 
 
-void _triangulos3D::calcular_normales_caras()
-{  
-_vertex3f a1, a2, n;
-normales_caras.resize(caras.size());
+void _triangulos3D::calcular_normales_caras(){
+  _vertex3f a1, a2, n;
+  normales_caras.resize(caras.size());
 
-for(int i=0; i<caras.size(); i++){
-	// obtener dos vectores en el triángulo y calcular el producto vectorial
-	a1=vertices[caras[i]._1]-vertices[caras[i]._0];
-       	a2=vertices[caras[i]._2]-vertices[caras[i]._0];
-        n=a1.cross_product(a2);
-	// modulo
-	float m=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
-	// normalización
-    	normales_caras[i]= _vertex3f(n.x/m, n.y/m, n.z/m);
-	}
-  
-b_normales_caras=true;
+  for(int i=0; i<caras.size(); i++){
+    // Obtener dos vectores en el triángulo y calcular el producto vectorial
+    a1=vertices[caras[i]._1]-vertices[caras[i]._0];
+    a2=vertices[caras[i]._2]-vertices[caras[i]._0];
+    n=a1.cross_product(a2);
+    
+    // Módulo
+    float m=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+    
+    // Normalización
+    normales_caras[i]= _vertex3f(n.x/m, n.y/m, n.z/m);
+  }
+    
+  b_normales_caras=true;
+}
+
+//*************************************************************************
+// calcular normales a vertices
+//*************************************************************************
+
+
+void _triangulos3D::calcular_normales_vertices(){
+  normales_vertices.resize(vertices.size());
+
+  for(int i=0; i<caras.size(); i++){
+    normales_vertices[caras[i]._0] += normales_caras[i];
+    normales_vertices[caras[i]._1] += normales_caras[i];
+    normales_vertices[caras[i]._2] += normales_caras[i];
+  }
+    
+  b_normales_vertices=true;
 }
 
 //*************************************************************************
@@ -175,7 +229,7 @@ switch (modo){
 	case SOLID_CHESS:draw_solido_ajedrez(r1, g1, b1, r2, g2, b2);break;
 	case SOLID:draw_solido(r1, g1, b1);break;
   case SOLID_ILLUMINATED_FLAT:draw_iluminacion_plana( );break;
-  //case SOLID_ILLUMINATED_GOURAUD:draw_iluminacion_suave();break;
+  case SOLID_ILLUMINATED_GOURAUD:draw_iluminacion_suave();break;
 	}
 }
 
@@ -639,6 +693,11 @@ _esfera::_esfera(float radio, int n, int m){
     perfil1.push_back(aux);
   }
   parametros(perfil1, m, 0, 0, radio, 3);
+
+  normales_vertices = vertices;
+
+  b_normales_vertices = true;
+
 }
 
 /************************************************************************/
@@ -651,6 +710,9 @@ _carroceria::_carroceria(){
   ruedas.parametros(perfil, 16, 0.2, 1.0, 0, 1);
 
   altura = 0.25;
+
+  ruedas.ambiente_difusa(0.2, 0.2, 0.2, 1.0);
+  carroceria.ambiente_difusa(0.2, 0.2, 0.2, 0.5);
 
 };
 
@@ -678,6 +740,8 @@ void _carroceria::draw(_modo modo, float r1, float g1, float b1, float r2, float
 _cabina::_cabina(){
   altura = 0.75;
   anchura = 0.7;
+
+  cabina.ambiente_difusa(1.0, 1.0, 0.0, 0.2);
 }
 
 void _cabina::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
@@ -691,6 +755,8 @@ void _cabina::draw(_modo modo, float r1, float g1, float b1, float r2, float g2,
 _brazo_base::_brazo_base(){
   altura = 0.75;
   anchura = 0.15;
+
+  brazo_base.ambiente_difusa(1.0, 1.0, 0.2, 1.0);
 };
 
 void _brazo_base::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
@@ -707,6 +773,8 @@ void _brazo_base::draw(_modo modo, float r1, float g1, float b1, float r2, float
 _brazo_final::_brazo_final(){
   altura = 0.75;
   anchura = 0.15;
+
+  brazo_final.ambiente_difusa(1.0, 1.0, 0.2, 1.0);
 };
 
 void _brazo_final::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
@@ -721,7 +789,7 @@ void _brazo_final::draw(_modo modo, float r1, float g1, float b1, float r2, floa
 }
 
 _gancho_mano::_gancho_mano(){
-  
+  mano.ambiente_difusa(0.5, 0.5, 0.5, 1.0);
 };
 
 void _gancho_mano::draw(_modo modo, float r1, float g1, float b1, float r2, float g2, float b2, float grosor){
